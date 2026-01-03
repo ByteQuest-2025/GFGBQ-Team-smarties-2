@@ -2,29 +2,61 @@ import streamlit as st
 from backend.claim_extractor import extract_claims
 from backend.citation_detector import extract_citations
 
+# ------------------------
+# Page Config
+# ------------------------
 st.set_page_config(page_title="TruthCheck AI")
 
 st.title("TruthCheck AI")
 st.caption("Checking the safety and reliability of AI-generated information")
 
-text = st.text_area("Paste AI-generated information here", height=200)
+# ------------------------
+# User Input
+# ------------------------
+text = st.text_area(
+    "Paste AI-generated information here",
+    height=200
+)
 
+# ------------------------
+# Analyze Button
+# ------------------------
 if st.button("Analyze"):
+
     if text.strip() == "":
         st.warning("Please enter some text to analyze.")
     else:
+        # ------------------------
+        # Extract information
+        # ------------------------
         claims = extract_claims(text)
         citations = extract_citations(text)
 
         # ------------------------
-        # Show extracted information
+        # Fallback: detect simple source words
+        # ------------------------
+        trusted_sources = [
+            "wikipedia", "who", "nasa", "britannica",
+            "research", "journal", "doi", "source"
+        ]
+
+        text_lower = text.lower()
+
+        if not citations:
+            for src in trusted_sources:
+                if src in text_lower:
+                    citations.append(src.capitalize())
+                    break
+
+        # ------------------------
+        # Display extracted statements
         # ------------------------
         st.subheader("Extracted Information Statements")
         for c in claims:
             st.write("•", c)
 
         # ------------------------
-        # Show source info
+        # Display source info
         # ------------------------
         st.subheader("Source Mentioned (if any)")
         if citations:
@@ -34,53 +66,27 @@ if st.button("Analyze"):
             st.write("None")
 
         # ------------------------
-        # Generic Risk / Hallucination Detection
-        # ------------------------
-        issues = []
-
-        # Rule 1: No source provided
-        if not citations:
-            issues.append("No source was provided to support the information.")
-
-        # Rule 2: Absolute words (often unreliable)
-        absolute_words = ["always", "never", "all", "100%", "guaranteed", "completely"]
-        for claim in claims:
-            for word in absolute_words:
-                if word in claim.lower():
-                    issues.append(
-                        f"The statement uses absolute wording ('{word}'), which may be unreliable."
-                    )
-
-        # Rule 3: Future predictions stated as facts
-        future_words = ["will", "by 2030", "by 2040", "in the future"]
-        for claim in claims:
-            for word in future_words:
-                if word in claim.lower():
-                    issues.append(
-                        "A future prediction is stated as a fact without evidence."
-                    )
-
-        # ------------------------
-        # Final Result (RED = Unsafe, GREEN = Safe)
+        # Final Decision Logic
         # ------------------------
         st.markdown("---")
 
-        if issues:
-            st.markdown(
-                "<h3 style='color:red;'>⚠️ Unsafe Content Detected</h3>",
-                unsafe_allow_html=True
-            )
-            for issue in set(issues):
-                st.markdown(
-                    f"<p style='color:red;'>• {issue}</p>",
-                    unsafe_allow_html=True
-                )
-        else:
+        if citations:
+            # GREEN – Source exists
             st.markdown(
                 "<h3 style='color:green;'>✅ Content Appears Safe</h3>",
                 unsafe_allow_html=True
             )
             st.markdown(
-                "<p style='color:green;'>No major hallucination or source-related risks were detected.</p>",
+                "<p style='color:green;'>A source is mentioned, which improves reliability.</p>",
+                unsafe_allow_html=True
+            )
+        else:
+            # RED – No source
+            st.markdown(
+                "<h3 style='color:red;'>⚠️ Potentially Unsafe Content</h3>",
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                "<p style='color:red;'>No source was mentioned to support the information.</p>",
                 unsafe_allow_html=True
             )
