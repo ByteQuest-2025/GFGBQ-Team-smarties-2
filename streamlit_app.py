@@ -14,7 +14,7 @@ text = st.text_area("Paste AI-generated information here", height=200)
 
 if st.button("Analyze"):
     if not text.strip():
-        st.warning("Please enter some text to analyze.")
+        st.warning("Please enter some text to analyze")
     else:
         claims = extract_claims(text)
 
