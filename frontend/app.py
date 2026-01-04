@@ -1,6 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import streamlit as st
 from backend.claim_extractor import extract_claims
 from backend.verifier import verify_claim
+
 
 st.set_page_config(page_title="TruthCheck AI")
 
