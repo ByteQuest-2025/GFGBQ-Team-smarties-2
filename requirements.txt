@@ -1,0 +1,4 @@
+streamlit
+wikipedia
+beautifulsoup4
+soupsieve
