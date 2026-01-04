@@ -1,5 +1,5 @@
 ## Problem Statement:
-AI Hallucination and Citation Verification System
+PS 03-AI Hallucination and Citation Verification System
 ## Project Name:
 TruthCheck AI
 ## Team Name:
