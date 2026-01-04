@@ -1,5 +1,13 @@
 import re
 
 def extract_citations(text):
-    pattern = r"\(.*?\d{4}.*?\)|https?://\S+"
-    return re.findall(pattern, text)
+    patterns = [
+        r"wikipedia",
+        r"\(\d{4}\)",
+        r"https?://"
+    ]
+    citations = []
+    for p in patterns:
+        if re.search(p, text, re.IGNORECASE):
+            citations.append(p)
+    return citations
