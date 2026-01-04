@@ -7,6 +7,7 @@ smarties-2
 ## Deployement Link:
 
 ## 2-Minute Demonstration Video Link:
+https://drive.google.com/file/d/1mrVfY86hvxAEw6TE0oH13xqWeBssasT2/view?usp=drivesdk
 
 ## PPT Link:
 https://docs.google.com/presentation/d/1fD2Sm5YJBhJ4DLjmjx8oL4NmqgkhF6rQ/edit?usp=drivesdk&ouid=105522803540655478747&rtpof=true&sd=true
